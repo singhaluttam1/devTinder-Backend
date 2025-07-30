@@ -11,7 +11,7 @@ const saltRounds = 10;
 authRouter.post("/signup", async (req, res) => {
     try {
         validateSignUpData(req);
-        const { firstName, lastName, emailID, password } = req.body;
+        const { firstName, lastName, emailID, password,age,gender,photourl } = req.body;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
         const user = await User.create({
@@ -19,9 +19,18 @@ authRouter.post("/signup", async (req, res) => {
             lastName,
             emailID,
             password: passwordHash,
-        });
+            age,
+            gender,
+            photourl: req.body.photourl
 
-        res.send("User Added successfully");
+        });
+        const savedUser = await user.save();
+        const token =await savedUser.getJWT()
+        res.cookie("token",token,{
+            expires: new Date(Date.now() + 8 * 3600000),
+        })
+
+        res.json({message:"User Added successfully", data: savedUser});
     } catch (err) {
         if (err.code === 11000) {
             return res.status(400).send("Email already exists");
@@ -50,7 +59,7 @@ authRouter.post("/login", async (req, res) => {
 
         const token = await user.getJWT();
         res.cookie("token", token, { httpOnly: true, expires: new Date(Date.now() + 8 * 3600000) });
-        res.send("Login Successful");
+        res.send(user);
     } catch (err) {
         res.status(400).send("Error: " + err.message);
     }

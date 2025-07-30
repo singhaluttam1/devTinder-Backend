@@ -7,14 +7,14 @@ const userRouter = express.Router()
 pagination
 
 // get all the pending connection request for the  loggedIn User
-const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills"
+const USER_SAFE_DATA = "firstName lastName photourl age gender about skills"
 userRouter.get("/user/requests", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user
         const connectionRequest = await ConnectionRequest.find({
             toUserId: loggedInUser._id,
             status: "interested"
-        }).populate("fromUserId", ["firstName", "lastName"])
+        }).populate("fromUserId", USER_SAFE_DATA)
         res.json({ message: "Data fetched Successfully", data: connectionRequest })
 
     } catch (err) {
