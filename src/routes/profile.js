@@ -64,21 +64,6 @@ profile.get("/user", userAuth, async (req, res) => {
         res.status(404).send("Something went wrong: " + err.message);
     }
 });
-
-// Get all users
-profile.get("/feed", async (req, res) => {
-    try {
-        const { page, limit, skip } = pagination(req);
-        const allUsers = await User.find({})
-        .limit(limit)
-        .skip(skip)
-        
-        res.status(200).send(allUsers);
-    } catch (error) {
-        res.status(404).send("Something went wrong: " + error.message);
-    }
-});
-
 // Get user by ID
 profile.get("/userID", async (req, res) => {
     const userId = req.query.id;
