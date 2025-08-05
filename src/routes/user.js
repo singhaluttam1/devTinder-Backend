@@ -87,7 +87,6 @@ userRouter.get('/feedcards', userAuth, async (req, res) => {
         }).select(USER_SAFE_DATA)
             .skip(skip)
             .limit(limit)
-        console.log(hideUsersfromFeed)
         res.send(users)
 
 
@@ -96,5 +95,10 @@ userRouter.get('/feedcards', userAuth, async (req, res) => {
 
     }
 })
+// routes/user.js
+userRouter.get('/status/:userId', (req, res) => {
+  const isOnline = onlineUsers.has(req.params.userId);
+  res.json({ isOnline });
+});
 
 module.exports = userRouter
